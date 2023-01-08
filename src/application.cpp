@@ -9,6 +9,8 @@ Application::Application()
     create_themes();
     window_.create(sf::VideoMode::getDesktopMode(), "NED", sf::Style::Default);
     window_.setFramerateLimit(120);
+    window_.setPosition(sf::Vector2i(0,0));
+    
     font_.loadFromFile("./content/fonts/indie_flower/IndieFlower-Regular.ttf");
     text_.setFont(font_);
     text_.setFillColor(sf::Color::White);

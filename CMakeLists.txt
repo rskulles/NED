@@ -11,7 +11,6 @@ file(TO_CMAKE_PATH "$ENV{SFML_LIB_DIR}" SF_LIB_DIR)
 set(INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include/")
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src/")
 
-#https://stackoverflow.com/questions/8304190/cmake-with-include-and-source-paths-basic-setup
 set(HEADER_FILES "${INCLUDE_DIR}application.hpp"
  "${INCLUDE_DIR}theme.hpp" 
  "${INCLUDE_DIR}element.hpp" 
@@ -31,7 +30,7 @@ target_include_directories(NED PUBLIC "${SF_INC_DIR}" "${PROJECT_SOURCE_DIR}/inc
 
 if(WIN32)
     #I had to modify a solution to not include quotes and I didn't need different options for different build types
-    set(SUBSYTEM_LINKER_OPTIONS /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
+    set(SUBSYSTEM_LINKER_OPTIONS /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
 
     file(TO_CMAKE_PATH "$ENV{SFML_BIN_DIR}" SF_BIN_DIR)
     file(GLOB THE_DLLS "${SF_BIN_DIR}/*.dll")
@@ -40,10 +39,10 @@ if(WIN32)
         COMMAND_EXPAND_LISTS
     )
 else()
-    set(SUBSYTEM_LINKER_OPTIONS "-mwindows")
+    set(SUBSYSTEM_LINKER_OPTIONS "-mwindows")
 endif(WIN32)
 
-target_link_options(NED PRIVATE ${SUBSYTEM_LINKER_OPTIONS})
+target_link_options(NED PRIVATE ${SUBSYSTEM_LINKER_OPTIONS})
 
 #target_include_directories GOOD target_link_directories BAD!!!
 find_library(SFML_GRAPHICS NAMES sfml-graphics PATHS "${SF_LIB_DIR}/")
@@ -53,4 +52,5 @@ find_library(SFML_NETWORK NAMES sfml-network PATHS "${SF_LIB_DIR}/")
 find_library(SFML_WINDOW NAMES sfml-window PATHS "${SF_LIB_DIR}/")
 
 #love how consistent cmake is...
-target_link_libraries(NED ${SFML_GRAPHICS} ${SFML_AUDIO} ${SFML_SYSTEM} ${SFML_NETWORK} ${SFML_WINDOW}) 
+target_link_libraries(NED ${SFML_GRAPHICS} ${SFML_AUDIO} ${SFML_SYSTEM} ${SFML_NETWORK} ${SFML_WINDOW})
+file(COPY ${FILE_DIR}content DESTINATION  ${CMakeCurrentBuildDir}/)
