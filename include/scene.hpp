@@ -15,12 +15,24 @@ enum class NodeDirection{
     SouthWest
 };
 
-class SceneNode{
+class SceneNode: public sf::Drawable{
     public:
-        SceneNode()
+        SceneNode():north_node_(nullptr),
+        south_node_(nullptr),
+        east_node_(nullptr),
+        west_node_(nullptr),
+        north_east_node_(nullptr),
+        north_west_node_(nullptr),
+        south_east_node_(nullptr),
+        south_west_node_(nullptr)
         {
 
         }
+
+        auto update(const float &dt)->void{
+            this->data_->update(dt);
+        }
+
         auto point_to(SceneNode& node, const NodeDirection &direction)->void{
             switch (direction)
             {
@@ -80,29 +92,56 @@ class SceneNode{
                     ptr = south_east_node_;
                     break;
                 case NodeDirection::SouthWest:
-                    ptr = south_east_node_;
+                    ptr = south_west_node_;
                     break;
             }
 
             return ptr;
         }
-    private:
-       SceneNode* north_node_;
-       SceneNode* south_node_;
-       SceneNode* east_node_;
-       SceneNode* west_node_;
-       SceneNode* north_east_node_;
-       SceneNode* north_west_node_;
-       SceneNode* south_east_node_;
-       SceneNode* south_west_node_;
+
+protected:
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override {
+            target.draw(*this, states);
+    }
+
+private:
+        unsigned int id_;
+        SceneNode* data_;
+        SceneNode* north_node_;
+        SceneNode* south_node_;
+        SceneNode* east_node_;
+        SceneNode* west_node_;
+        SceneNode* north_east_node_;
+        SceneNode* north_west_node_;
+        SceneNode* south_east_node_;
+        SceneNode* south_west_node_;
 };
 
 class Scene:public sf::Drawable{
     public:
         Scene();
         virtual ~Scene()= default;
+        auto update(const float& dt)->void{
+            update_node(dt,head_);
+        }
     protected:
-        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override; 
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override{
+                target.draw(*head_, states);
+        }
+    private:
+    auto update_node(const float& dt,  SceneNode* node)->void{
+        if(node == nullptr) return;
+         node->update(dt);
+         update_node(dt,node->get_neighbor(NodeDirection::North));
+         update_node(dt,node->get_neighbor(NodeDirection::South));
+         update_node(dt,node->get_neighbor(NodeDirection::East));
+         update_node(dt,node->get_neighbor(NodeDirection::West));
+         update_node(dt,node->get_neighbor(NodeDirection::NorthEast));
+         update_node(dt,node->get_neighbor(NodeDirection::NorthWest));
+         update_node(dt,node->get_neighbor(NodeDirection::SouthEast));
+         update_node(dt,node->get_neighbor(NodeDirection::SouthWest));
+    }
+    SceneNode* head_;
 };
 
 #endif //SCENE_HPP
