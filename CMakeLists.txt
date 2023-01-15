@@ -24,7 +24,7 @@ set(SRC_FILES "${SRC_DIR}main.cpp"
 )
 
 set(ALL_SRCS ${SRC_FILES} ${HEADER_FILES})
-
+message("Current build type: ${CMAKE_BUILD_TYPE}")
 add_executable(NED ${ALL_SRCS})
 target_include_directories(NED PUBLIC "${SF_INC_DIR}" "${PROJECT_SOURCE_DIR}/include/" "${PROJECT_SOUR_DIR}/src/")
 
@@ -38,8 +38,6 @@ if(WIN32)
         COMMAND ${CMAKE_COMMAND} -E copy ${THE_DLLS} $<TARGET_FILE_DIR:NED>
         COMMAND_EXPAND_LISTS
     )
-else()
-    set(SUBSYSTEM_LINKER_OPTIONS "-mwindows")
 endif(WIN32)
 
 target_link_options(NED PRIVATE ${SUBSYSTEM_LINKER_OPTIONS})
@@ -51,6 +49,6 @@ find_library(SFML_SYSTEM NAMES sfml-system PATHS "${SF_LIB_DIR}/")
 find_library(SFML_NETWORK NAMES sfml-network PATHS "${SF_LIB_DIR}/")
 find_library(SFML_WINDOW NAMES sfml-window PATHS "${SF_LIB_DIR}/")
 
-#love how consistent cmake is...
 target_link_libraries(NED ${SFML_GRAPHICS} ${SFML_AUDIO} ${SFML_SYSTEM} ${SFML_NETWORK} ${SFML_WINDOW})
-file(COPY ${FILE_DIR}content DESTINATION  ${CMakeCurrentBuildDir}/)
+message("CURRENT OUTPU DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}")
+file(COPY ${FILE_DIR}content DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
